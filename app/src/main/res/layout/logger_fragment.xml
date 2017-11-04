@@ -25,7 +25,7 @@
             android:text="Force" />
 
         <ProgressBar
-            android:id="@+id/progressBar"
+            android:id="@+id/progressBar_force"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,19 +53,19 @@
         android:orientation="horizontal">
 
         <NumberPicker
-            android:id="@+id/numberPicker"
+            android:id="@+id/numberPicker_hundreds"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <NumberPicker
-            android:id="@+id/numberPicker2"
+            android:id="@+id/numberPicker_tens"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <NumberPicker
-            android:id="@+id/numberPicker3"
+            android:id="@+id/numberPicker_ones"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
@@ -80,7 +80,7 @@
     </LinearLayout>
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switch_record"
         android:layout_width="125dp"
         android:layout_height="20dp"
         android:layout_weight="1"

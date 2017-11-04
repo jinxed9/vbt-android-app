@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -50,20 +51,10 @@ public class LoggerActivity extends AppCompatActivity implements LoggerContract.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.logger_activity);
 
-       // SensorManager mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.placeholder,new LoggerFragment());
+        ft.commit();
 
-        //mDataRecorder = new DataRecorder();
-       // mPresenter = new LoggerPresenter(mDataRecorder,this);
-
-        //add the fragment to the container
-        LoggerFragment loggerFragment =
-                (LoggerFragment) getSupportFragmentManager().findFragmentById(R.id.logger_fragment);
-        if (loggerFragment == null) {
-            // Create the fragment
-            loggerFragment = LoggerFragment.newInstance();
-        }
-            ActivityUtils.addFragmentToActivity(
-                    getSupportFragmentManager(), loggerFragment, R.id.fragment_container);
 
 
     }

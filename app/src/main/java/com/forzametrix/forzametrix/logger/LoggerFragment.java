@@ -1,7 +1,12 @@
 package com.forzametrix.forzametrix.logger;
 
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -19,6 +24,11 @@ import static android.support.v4.util.Preconditions.checkNotNull;
 public class LoggerFragment extends Fragment {
 
 
+    NumberPicker ones;
+    NumberPicker tens;
+    NumberPicker hundreds;
+    Switch record;
+    ProgressBar forceBar;
 
     public LoggerFragment(){
 
@@ -28,20 +38,23 @@ public class LoggerFragment extends Fragment {
         return new LoggerFragment();
     }
 
-    public void onCreate(){
+    public void onCreate(@Nullable Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+    }
+
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
+        View root = inflater.inflate(R.layout.logger_fragment, container, false);
 
 
-/*
-        tens = (NumberPicker) findViewById(R.id.numberPicker);
-        ones = (NumberPicker) findViewById(R.id.numberPicker2);
-        hundreds = (NumberPicker) findViewById(R.id.numberPicker3);
-        record = (Switch)findViewById(R.id.switch1);
-        forceBar = (ProgressBar)findViewById(R.id.progressBar2);
+        tens = (NumberPicker) root.findViewById(R.id.numberPicker_tens);
+        ones = (NumberPicker) root.findViewById(R.id.numberPicker_ones);
+        hundreds = (NumberPicker) root.findViewById(R.id.numberPicker_hundreds);
+        record = (Switch)root.findViewById(R.id.switch_record);
+        forceBar = (ProgressBar)root.findViewById(R.id.progressBar_force);
 
         forceBar.setMax(100);
         forceBar.setProgress(0);
-
-        forceNum = (TextView) findViewById(R.id.textView6);
 
         ones.setMinValue(0);
         tens.setMinValue(0);
@@ -49,12 +62,11 @@ public class LoggerFragment extends Fragment {
         ones.setMaxValue(9);
         tens.setMaxValue(9);
         hundreds.setMaxValue(9);
-        ones.setWrapSelectorWheel(false);
-        tens.setWrapSelectorWheel(false);
-        hundreds.setWrapSelectorWheel(false);
+        ones.setWrapSelectorWheel(true);
+        tens.setWrapSelectorWheel(true);
+        hundreds.setWrapSelectorWheel(true);
 
-        plusOne = 0;
-        */
+        return root;
     }
 
 
