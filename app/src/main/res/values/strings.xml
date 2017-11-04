@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">ForzaMetrix</string>
+    <string name="title_activity_splash">SplashActivity</string>
+</resources>
