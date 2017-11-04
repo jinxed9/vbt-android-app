@@ -55,14 +55,16 @@ public class LoggerActivity extends AppCompatActivity implements LoggerContract.
         //mDataRecorder = new DataRecorder();
        // mPresenter = new LoggerPresenter(mDataRecorder,this);
 
+        //add the fragment to the container
         LoggerFragment loggerFragment =
-                (LoggerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                (LoggerFragment) getSupportFragmentManager().findFragmentById(R.id.logger_fragment);
         if (loggerFragment == null) {
             // Create the fragment
             loggerFragment = LoggerFragment.newInstance();
+        }
             ActivityUtils.addFragmentToActivity(
                     getSupportFragmentManager(), loggerFragment, R.id.fragment_container);
-        }
+
 
     }
 

@@ -2,7 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fragment_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent"
+    android:background="@color/colorDarkGreen"
+    >
+
+    <include layout="@layout/logger_fragment"/>
+
+</FrameLayout>
 <!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,11 +18,7 @@
     tools:context="com.forzametrix.forzametrix.logger.LoggerActivity">
 
 
-    <fragment
-        android:name="com.forzametrix.forzametrix.logger.LoggerFragment"
-        android:id="@+id/logger"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"/>
+
 
 
     <NumberPicker
