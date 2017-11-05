@@ -16,7 +16,9 @@
 
 package com.forzametrix.forzametrix.logger;
 
+import android.hardware.Sensor;
 import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.support.annotation.NonNull;
 
 import com.forzametrix.forzametrix.BasePresenter;
@@ -30,17 +32,21 @@ import java.util.List;
  */
 public interface LoggerContract {
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView<Presenter>{
 
         void updateForce(int force);
 
     }
 
-    interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter,SensorEventListener {
 
         boolean beginRecording();
 
         boolean endRecording();
+
+        void onSensorChanged(SensorEvent sensorEvent);
+
+        void onAccuracyChanged(Sensor sensor, int accuracy);
 
 
     }

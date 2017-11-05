@@ -30,7 +30,7 @@ import static android.support.v4.util.Preconditions.checkNotNull;
  * Created by Bryan on 10/29/2017.
  */
 
-public class LoggerFragment extends Fragment implements LoggerContract.View,SensorEventListener {
+public class LoggerFragment extends Fragment implements LoggerContract.View{
 
     LoggerContract.Presenter mPresenter;
     NumberPicker ones;
@@ -68,7 +68,7 @@ public class LoggerFragment extends Fragment implements LoggerContract.View,Sens
         forceBar = (ProgressBar)view.findViewById(R.id.progressBar_force);
 
         forceBar.setMax(100);
-        forceBar.setProgress(50);
+        forceBar.setProgress(0);
 
         ones.setMinValue(0);
         tens.setMinValue(0);
@@ -116,39 +116,15 @@ public class LoggerFragment extends Fragment implements LoggerContract.View,Sens
         forceBar.setProgress(force);
     }
 
-    public void updateForce(float force){
-        int forceInt = (int)(force * 10);
-        forceBar.setProgress(forceInt);
-    }
-
-    @Override
-    public final void onAccuracyChanged(Sensor sensor, int accuracy){
-        //Do something here.
-        Log.v("Accel:","Accuracy Changed!");
-    }
-
-    //move this to the presenter in the future
-    @Override
-    public final void onSensorChanged(SensorEvent event){
-        if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
-            return;
-        Log.v("Accel:","X:"+event.values[0]);
-
-        updateForce(event.values[0]);
-    }
-
-
-    public boolean stop(){
+    private void stop(){
         Log.v("Model:","Recording Stopped");
-        mSensorManager.unregisterListener(this);
-        return true;
+        mSensorManager.unregisterListener(mPresenter);
     }
 
 
-    public boolean start(){
+    private void start(){
         Log.v("Model:","Recording Started");
-        mSensorManager.registerListener(this,checkNotNull(mAccelSensor),mSensorManager.SENSOR_DELAY_NORMAL);
-        return true;
+        mSensorManager.registerListener(mPresenter,checkNotNull(mAccelSensor),mSensorManager.SENSOR_DELAY_FASTEST);
     }
 
 

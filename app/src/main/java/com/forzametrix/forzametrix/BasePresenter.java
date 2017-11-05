@@ -18,6 +18,5 @@ package com.forzametrix.forzametrix;
 
 public interface BasePresenter {
 
-    void start();
 
 }
