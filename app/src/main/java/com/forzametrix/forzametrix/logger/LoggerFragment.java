@@ -1,11 +1,17 @@
 package com.forzametrix.forzametrix.logger;
 
+import android.content.Context;
+import android.hardware.SensorEvent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.hardware.SensorEventListener;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.NumberPicker;
@@ -24,12 +30,15 @@ import static android.support.v4.util.Preconditions.checkNotNull;
 
 public class LoggerFragment extends Fragment implements LoggerContract.View {
 
- //   LoggerContract.Presenter mPresenter;
+    LoggerContract.Presenter mPresenter;
     NumberPicker ones;
     NumberPicker tens;
     NumberPicker hundreds;
     Switch record;
     ProgressBar forceBar;
+    SensorManager mSensorManager;
+    Sensor mAccelSensor;
+
 
     public LoggerFragment(){
 
@@ -48,6 +57,8 @@ public class LoggerFragment extends Fragment implements LoggerContract.View {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
+
+
         tens = (NumberPicker) view.findViewById(R.id.numberPicker_tens);
         ones = (NumberPicker) view.findViewById(R.id.numberPicker_ones);
         hundreds = (NumberPicker) view.findViewById(R.id.numberPicker_hundreds);
@@ -66,30 +77,62 @@ public class LoggerFragment extends Fragment implements LoggerContract.View {
         ones.setWrapSelectorWheel(true);
         tens.setWrapSelectorWheel(true);
         hundreds.setWrapSelectorWheel(true);
-/*
+
+
+        mSensorManager = (SensorManager)getActivity().getSystemService(Context.SENSOR_SERVICE);
+        //get a reference to the accelerometer
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            mAccelSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            int delay = mAccelSensor.getMinDelay();
+        } else {
+            //No accelerometers are available;
+        }
+
+
         record.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked){
                 if(isChecked){
                     //The toggle is enabled
-            //        mPresenter.beginRecording();
+                    mPresenter.beginRecording();
                 }else{
                     //the toggle is not enabled
-             //       mPresenter.endRecording();
+                    mPresenter.endRecording();
                 }
             }
         });
-        */
+
     }
 
-
-
     public void setPresenter(@NonNull LoggerContract.Presenter presenter){
-      //  mPresenter = checkNotNull(presenter);
+        mPresenter = checkNotNull(presenter);
     }
 
 
     public void updateForce(int force){
-      //  forceBar.setProgress(force);
+        forceBar.setProgress(force);
+    }
+
+
+    //might not need this method here
+/*
+    public void onSensorChanged(SensorEvent event){
+        if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
+            return;
+        Log.v("Accel:","X:"+event.values[0]);
+    }
+*/
+
+    public boolean stop(){
+        Log.v("Model:","Recording Stopped");
+      //  mSensorManager.unregisterListener();
+        return true;
+    }
+
+
+    public boolean start(){
+        Log.v("Model:","Recording Started");
+      //  mSensorManager.registerListener(this,checkNotNull(mAccelSensor),mSensorManager.SENSOR_DELAY_NORMAL);
+        return true;
     }
 
 

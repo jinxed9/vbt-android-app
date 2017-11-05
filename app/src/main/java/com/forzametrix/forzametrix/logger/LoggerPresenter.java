@@ -33,6 +33,8 @@ public class LoggerPresenter implements LoggerContract.Presenter {
 
     }
 
+
+
     public boolean beginRecording(){
         Log.v("Presenter:","Begin Recording.");
         return mDataRecorder.start();

@@ -22,14 +22,13 @@ public class DataRecorder implements DataRecorderContract.DataRecorder,SensorEve
     private Context mContext;
 
 
-    void DataRecorder(SensorManager sensorManager){
-        mSensorManager = sensorManager;
+    public void DataRecorder(){
     }
 
     protected void onCreate(Bundle savedInstanceState) {
        // mSensorManager = (SensorManager) mContext.getSystemService(mContext.SENSOR_SERVICE);
         mGyroSensor = null;
-
+/*
         if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             mAccelSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             int delay = mAccelSensor.getMinDelay();
@@ -41,7 +40,7 @@ public class DataRecorder implements DataRecorderContract.DataRecorder,SensorEve
             mGyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
             int delay = mGyroSensor.getMinDelay();
         }
-
+*/
     }
 
 
@@ -56,14 +55,14 @@ public class DataRecorder implements DataRecorderContract.DataRecorder,SensorEve
     }
 
     public boolean start(){
-        Log.v("Model:","Recording Started");
-        mSensorManager.registerListener(this,checkNotNull(mAccelSensor),mSensorManager.SENSOR_DELAY_NORMAL);
+      //  Log.v("Model:","Recording Started");
+       // mSensorManager.registerListener(this,checkNotNull(mAccelSensor),mSensorManager.SENSOR_DELAY_NORMAL);
         return true;
     }
 
     public boolean stop(){
-        Log.v("Model:","Recording Stopped");
-        mSensorManager.unregisterListener(this);
+      //  Log.v("Model:","Recording Stopped");
+     //  mSensorManager.unregisterListener(this);
         return true;
     }
 }

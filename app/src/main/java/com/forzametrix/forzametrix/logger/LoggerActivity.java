@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 
 import com.forzametrix.forzametrix.data.DataRecorder;
 import com.forzametrix.forzametrix.data.DataRecorderContract;
@@ -30,8 +31,10 @@ import static android.support.v4.util.Preconditions.checkNotNull;
 
 public class LoggerActivity extends AppCompatActivity{
 
-  //  LoggerPresenter mLoggerPresenter;
-  //  DataRecorder mDataRecorder;
+    LoggerPresenter mLoggerPresenter;
+    DataRecorder mDataRecorder;
+    SensorManager mSensorManager;
+    Sensor mAccelSensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +45,13 @@ public class LoggerActivity extends AppCompatActivity{
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         LoggerFragment lf = new LoggerFragment();
         ft.replace(R.id.placeholder,lf);
+        ft.commit();
 
-   //     mDataRecorder = new DataRecorder();
 
-    //    mLoggerPresenter = new LoggerPresenter(mDataRecorder ,lf);
+
+        mDataRecorder = new DataRecorder();
+
+        mLoggerPresenter = new LoggerPresenter(mDataRecorder ,lf);
 
     }
 
