@@ -26,14 +26,15 @@
 
         <ProgressBar
             android:id="@+id/progressBar_force"
-            style="?android:attr/progressBarStyleHorizontal"
+            style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:layout_weight=".80"
             android:backgroundTint="@color/colorPrimaryDark"
             android:progressBackgroundTint="@color/colorPrimaryDark"
-            android:progressTint="@color/colorAccent"
-            android:layout_marginRight="30dp"
-            android:layout_weight=".80" />
+            android:progressTint="@color/colorAccent"/>
+
     </LinearLayout>
 
     <TextView
@@ -85,5 +86,4 @@
         android:layout_height="20dp"
         android:layout_weight="1"
         android:text="Record" />
-
 </LinearLayout>

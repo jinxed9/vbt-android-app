@@ -4,17 +4,11 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.CompoundButton;
-import android.widget.NumberPicker;
-import android.widget.ProgressBar;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.support.v4.app.Fragment;
 
 import com.forzametrix.forzametrix.data.DataRecorder;
 import com.forzametrix.forzametrix.data.DataRecorderContract;
@@ -26,49 +20,34 @@ import com.forzametrix.forzametrix.R;
 
 import com.forzametrix.forzametrix.R;
 
+import javax.inject.Inject;
+
 import static android.support.v4.util.Preconditions.checkNotNull;
 
 /**
  * Created by Bryan on 10/29/2017.
  */
 
-public class LoggerActivity extends AppCompatActivity implements LoggerContract.View {
+public class LoggerActivity extends AppCompatActivity{
 
-  //  private LoggerContract.Presenter mPresenter;
-
-  //  private NumberPicker ones;
-  //  private NumberPicker tens;
-  //  private NumberPicker hundreds;
-  //  private ProgressBar forceBar;
-  //  private Switch record;
-  //  private TextView forceNum;
-  //  private DataRecorder mDataRecorder;
-
-  //  private int plusOne;
+  //  LoggerPresenter mLoggerPresenter;
+  //  DataRecorder mDataRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.logger_activity);
 
+        //adding the fragment to the container by swapping out a placeholder
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.placeholder,new LoggerFragment());
-        ft.commit();
+        LoggerFragment lf = new LoggerFragment();
+        ft.replace(R.id.placeholder,lf);
 
+   //     mDataRecorder = new DataRecorder();
 
-
-    }
-
-
-
-    public void setPresenter(@NonNull LoggerContract.Presenter presenter){
-      //  mPresenter = checkNotNull(presenter);
-    }
-
-
-    public void updateForce(int force){
-
+    //    mLoggerPresenter = new LoggerPresenter(mDataRecorder ,lf);
 
     }
+
 
 }
