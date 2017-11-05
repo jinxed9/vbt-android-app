@@ -1,7 +1,9 @@
 package com.forzametrix.forzametrix.logger;
 
 import android.content.Context;
+import android.drm.DrmManagerClient;
 import android.hardware.SensorEvent;
+import android.media.MediaDrm;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,7 +30,7 @@ import static android.support.v4.util.Preconditions.checkNotNull;
  * Created by Bryan on 10/29/2017.
  */
 
-public class LoggerFragment extends Fragment implements LoggerContract.View {
+public class LoggerFragment extends Fragment implements LoggerContract.View,SensorEventListener {
 
     LoggerContract.Presenter mPresenter;
     NumberPicker ones;
@@ -94,9 +96,11 @@ public class LoggerFragment extends Fragment implements LoggerContract.View {
                 if(isChecked){
                     //The toggle is enabled
                     mPresenter.beginRecording();
+                    start();
                 }else{
                     //the toggle is not enabled
                     mPresenter.endRecording();
+                    stop();
                 }
             }
         });
@@ -112,26 +116,38 @@ public class LoggerFragment extends Fragment implements LoggerContract.View {
         forceBar.setProgress(force);
     }
 
+    public void updateForce(float force){
+        int forceInt = (int)(force * 10);
+        forceBar.setProgress(forceInt);
+    }
 
-    //might not need this method here
-/*
-    public void onSensorChanged(SensorEvent event){
+    @Override
+    public final void onAccuracyChanged(Sensor sensor, int accuracy){
+        //Do something here.
+        Log.v("Accel:","Accuracy Changed!");
+    }
+
+    //move this to the presenter in the future
+    @Override
+    public final void onSensorChanged(SensorEvent event){
         if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
             return;
         Log.v("Accel:","X:"+event.values[0]);
+
+        updateForce(event.values[0]);
     }
-*/
+
 
     public boolean stop(){
         Log.v("Model:","Recording Stopped");
-      //  mSensorManager.unregisterListener();
+        mSensorManager.unregisterListener(this);
         return true;
     }
 
 
     public boolean start(){
         Log.v("Model:","Recording Started");
-      //  mSensorManager.registerListener(this,checkNotNull(mAccelSensor),mSensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this,checkNotNull(mAccelSensor),mSensorManager.SENSOR_DELAY_NORMAL);
         return true;
     }
 

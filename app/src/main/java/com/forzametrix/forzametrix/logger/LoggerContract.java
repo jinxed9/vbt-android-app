@@ -16,6 +16,7 @@
 
 package com.forzametrix.forzametrix.logger;
 
+import android.hardware.SensorEvent;
 import android.support.annotation.NonNull;
 
 import com.forzametrix.forzametrix.BasePresenter;
