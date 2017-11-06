@@ -40,9 +40,9 @@ public interface LoggerContract {
 
     interface Presenter extends BasePresenter,SensorEventListener {
 
-        boolean beginRecording();
+        void beginRecording();
 
-        boolean endRecording();
+        void endRecording();
 
         void onSensorChanged(SensorEvent sensorEvent);
 
