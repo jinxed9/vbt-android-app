@@ -40,6 +40,9 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
     ProgressBar forceBar;
     SensorManager mSensorManager;
     Sensor mAccelSensor;
+    Sensor mGyroSensor;
+    Sensor mGravitySensor;
+    TextView forceView;
 
 
     public LoggerFragment(){
@@ -66,9 +69,11 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
         hundreds = (NumberPicker) view.findViewById(R.id.numberPicker_hundreds);
         record = (Switch)view.findViewById(R.id.switch_record);
         forceBar = (ProgressBar)view.findViewById(R.id.progressBar_force);
+        forceView = (TextView)view.findViewById(R.id.textView_force);
 
         forceBar.setMax(100);
         forceBar.setProgress(0);
+        forceView.setText("- - -");
 
         ones.setMinValue(0);
         tens.setMinValue(0);
@@ -87,8 +92,25 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
             mAccelSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             int delay = mAccelSensor.getMinDelay();
         } else {
+            Log.v("View:","No accelerometers available");
             //No accelerometers are available;
         }
+
+        if(mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null){
+            mGyroSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        } else {
+            Log.v("View:","No gyroscope available");
+            //No gyros available;
+        }
+
+        if(mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null){
+            mGravitySensor = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        } else{
+            Log.v("View:","No gravity sensor available");
+            //No gravity sensors availble;
+        }
+
+
 
 
         record.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
@@ -111,6 +133,9 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
         mPresenter = checkNotNull(presenter);
     }
 
+    public void updateForceView(String force){
+        forceView.setText(force);
+    }
 
     public void updateForce(int force){
         forceBar.setProgress(force);
@@ -125,6 +150,7 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
     private void start(){
         Log.v("Model:","Recording Started");
         mSensorManager.registerListener(mPresenter,checkNotNull(mAccelSensor),mSensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(mPresenter,checkNotNull(mGravitySensor),mSensorManager.SENSOR_DELAY_FASTEST);
     }
 
 

@@ -33,7 +33,9 @@ import static android.support.v4.util.Preconditions.checkNotNull;
 
 public class LoggerPresenter implements LoggerContract.Presenter {
 
-    private String data;
+    private float accelX,accelY,accelZ;
+    private float gravX,gravY,gravZ;
+    private String gravData, accelData,data;
     private long startTime;
 
     private final DataRecorderContract.DataRecorder mDataRecorder;
@@ -49,17 +51,35 @@ public class LoggerPresenter implements LoggerContract.Presenter {
 
 
     public final void onSensorChanged(SensorEvent event){
-        Log.v("Presenter:", "OnSensorChanged");
-        if (event.sensor.getType() != Sensor.TYPE_ACCELEROMETER)
-            return;
-       // Log.v("Accel:","X:"+event.values[0]);
-
+       // Log.v("Presenter:", "OnSensorChanged");
         long currentTime = System.nanoTime() - startTime;
-        data = data + currentTime + "," + event.values[0] + "," + event.values[1]  + ","+ event.values[2]  + "\n";
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            //update with the latest accel data;
+            accelX = event.values[0];
+            accelY = event.values[1];
+            accelZ = event.values[2];
+            accelData = event.values[0] + "," + event.values[1] + "," + event.values[2];
+        }
+        if(event.sensor.getType() == Sensor.TYPE_GRAVITY) {
+            //update with the latest grav data;
+            gravX = event.values[0];
+            gravY = event.values[1];
+            gravZ = event.values[2];
+            gravData = event.values[0] + "," + event.values[1] + "," + event.values[2];
+            //int forceInt = (int) (event.values[0] * 10);
+            //mLoggerView.updateForce(forceInt);
+        }
 
-        int forceInt = (int)(event.values[0] * 10);
+        //calculate the dot product;
+        float dp = accelX*gravX + accelY*gravY + accelZ*gravZ;
+        mLoggerView.updateForceView(Float.toString(dp));
+        mLoggerView.updateForce((int)dp-80);
 
-        mLoggerView.updateForce(forceInt);
+        //data = data + currentTime + "," + dp + "\n";
+
+        //compile the string
+        //data = data + currentTime + "," + accelData + "," + gravData + "\n";
+
     }
 
     public final void onAccuracyChanged(Sensor sensor, int accuracy){

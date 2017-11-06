@@ -36,6 +36,8 @@ public interface LoggerContract {
 
         void updateForce(int force);
 
+        void updateForceView(String force);
+
     }
 
     interface Presenter extends BasePresenter,SensorEventListener {
