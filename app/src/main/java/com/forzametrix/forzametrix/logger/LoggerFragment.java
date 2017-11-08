@@ -42,7 +42,7 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
     Sensor mAccelSensor;
     Sensor mGyroSensor;
     Sensor mGravitySensor;
-    TextView forceView;
+    TextView forceView,repsView,velocityView;
 
 
     public LoggerFragment(){
@@ -70,6 +70,8 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
         record = (Switch)view.findViewById(R.id.switch_record);
         forceBar = (ProgressBar)view.findViewById(R.id.progressBar_force);
         forceView = (TextView)view.findViewById(R.id.textView_force);
+        velocityView = (TextView)view.findViewById(R.id.textView_velocityActual);
+        repsView = (TextView)view.findViewById(R.id.textView_repsActual);
 
         forceBar.setMax(100);
         forceBar.setProgress(0);
@@ -139,6 +141,14 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
 
     public void updateForce(int force){
         forceBar.setProgress(force);
+    }
+
+    public void updateRep(String rep){
+        repsView.setText(rep);
+    }
+
+    public void updateVelocity(String velocity){
+        velocityView.setText(velocity);
     }
 
     private void stop(){

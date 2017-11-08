@@ -38,6 +38,10 @@ public interface LoggerContract {
 
         void updateForceView(String force);
 
+        void updateRep(String rep);
+
+        void updateVelocity(String velocity);
+
     }
 
     interface Presenter extends BasePresenter,SensorEventListener {

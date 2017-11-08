@@ -116,6 +116,8 @@ public class LoggerPresenter implements LoggerContract.Presenter {
             rep++;
             float averageVelocity = cumVelocity/samples;
             data = data + "------- " + rep + ":" + averageVelocity + " -------\n";
+            mLoggerView.updateRep(Integer.toString(rep));
+            mLoggerView.updateVelocity(String.format("%.4f",averageVelocity));
         }
         //compile the string
         //data = data + currentTime + "," + accelData + "," + gravData + "\n";
