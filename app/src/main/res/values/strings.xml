@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">ForzaMetrix</string>
     <string name="title_activity_splash">ForzaMetrix</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="first">first</string>
+    <string name="last">last</string>
 </resources>
