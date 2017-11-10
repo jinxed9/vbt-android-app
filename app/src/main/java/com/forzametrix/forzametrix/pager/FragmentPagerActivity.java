@@ -1,6 +1,7 @@
 package com.forzametrix.forzametrix.pager;
 
 import android.Manifest;
+import android.content.pm.ActivityInfo;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,8 +25,12 @@ import com.forzametrix.forzametrix.R;
 import com.forzametrix.forzametrix.data.DataRecorder;
 import com.forzametrix.forzametrix.logger.LoggerFragment;
 import com.forzametrix.forzametrix.logger.LoggerPresenter;
+import com.forzametrix.forzametrix.summary.SummaryFragment;
 import com.forzametrix.forzametrix.velocity.VelocityFragment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static android.content.pm.PackageManager.PERMISSION_DENIED;
@@ -37,6 +42,11 @@ public class FragmentPagerActivity extends AppCompatActivity {
     static LoggerFragment lf;
     static LoggerPresenter mLoggerPresenter;
     static DataRecorder mDataRecorder;
+
+    //----------------------
+    static SummaryFragment sf;
+
+
 
 
     @Override
@@ -53,7 +63,6 @@ public class FragmentPagerActivity extends AppCompatActivity {
             //request permissions
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSION_REQUEST_EXTERNAL_WRITE);
-
         }
 
         lf = new LoggerFragment();
@@ -64,7 +73,13 @@ public class FragmentPagerActivity extends AppCompatActivity {
         mPager = (ViewPager)findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
 
+
+        //------------the test section -----------------
+        sf = new SummaryFragment();
+
+
     }
+
 
 
     public static class Adapter extends FragmentPagerAdapter {
@@ -81,7 +96,7 @@ public class FragmentPagerActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             if(position == 0)
                 return lf;
-            return new VelocityFragment();
+            return sf;
         }
     }
 }
