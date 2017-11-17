@@ -1,5 +1,6 @@
 package com.forzametrix.forzametrix.data;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -10,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Random;
+import android.database.sqlite.SQLiteOpenHelper;
+
 
 import static android.support.v4.util.Preconditions.checkNotNull;
 
@@ -23,7 +26,7 @@ public class DataRecorder implements DataRecorderContract.DataRecorder{
     }
 
     protected void onCreate(Bundle savedInstanceState) {
-
+        //create or open the database here
 
     }
 

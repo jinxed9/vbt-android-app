@@ -1,30 +1,21 @@
 package com.forzametrix.forzametrix.logger;
 
 import android.Manifest;
-import android.content.Context;
+import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.forzametrix.forzametrix.data.DataRecorder;
-import com.forzametrix.forzametrix.data.DataRecorderContract;
-import com.forzametrix.forzametrix.util.ActivityUtils;
+import com.forzametrix.forzametrix.summary.SummaryPresenter;
 import com.forzametrix.forzametrix.R;
+import com.forzametrix.forzametrix.data.RepsDatabase;
 
-
-
-
-import com.forzametrix.forzametrix.R;
-
-import javax.inject.Inject;
 
 import static android.content.pm.PackageManager.PERMISSION_DENIED;
 import static android.support.v4.util.Preconditions.checkNotNull;
@@ -33,12 +24,16 @@ import static android.support.v4.util.Preconditions.checkNotNull;
  * Created by Bryan on 10/29/2017.
  */
 
+
+//this doesn't get called. I need to do some cleanup. See Fragment Pager Activity
 public class LoggerActivity extends AppCompatActivity{
 
     LoggerPresenter mLoggerPresenter;
+    SummaryPresenter mSummaryPresenter;
     DataRecorder mDataRecorder;
     SensorManager mSensorManager;
     Sensor mAccelSensor;
+    RepsDatabase mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +56,13 @@ public class LoggerActivity extends AppCompatActivity{
                     MY_PERMISSION_REQUEST_EXTERNAL_WRITE);
         }
 
+
+        Log.v("View","Creating Database");
         mDataRecorder = new DataRecorder();
 
-        mLoggerPresenter = new LoggerPresenter(mDataRecorder ,lf);
 
     }
 
-
 }
+
+

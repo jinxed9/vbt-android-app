@@ -4,6 +4,7 @@ package com.forzametrix.forzametrix.summary;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
@@ -26,6 +27,8 @@ import android.widget.SimpleExpandableListAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static android.support.v4.util.Preconditions.checkNotNull;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,22 +69,22 @@ public class SummaryFragment extends Fragment {
         // TODO Auto-generated method stub
 
         super.onActivityCreated(savedInstanceState);
-        //parent=new Parent();
-        //child=new Child();
         ExpandableListView lv = (ExpandableListView) v.findViewById(R.id.summaryList);
 
-        //here setting all the values to Parent and child classes
-        setDataValues();
         prepareListData();//here get the values and set this values to adoptor and set it visible
         con=getActivity();
 
         mAdapter=new ExpandabelListAdoptor(con,_listDataHeader, _listDataChild) ; //here i didnt set list values to this adoptor
 
-        // mAdapter = new ExpandableListAdapter(this, _listDataHeader, _listDataChild);
-
         // setting list adapter
         lv.setAdapter(mAdapter);
 
+
+
+    }
+
+    public SummaryContract.View getAdapter(){
+        return (SummaryContract.View)lv.getAdapter();
     }
 
     public void prepareListData()
@@ -93,47 +96,37 @@ public class SummaryFragment extends Fragment {
 
         // declare the references
         //add the parent values to List
-        _listDataHeader.add("Testing");
-        _listDataHeader.add("100");
-        _listDataHeader.add("200");
-        _listDataHeader.add("300");
+        _listDataHeader.add("11/13/17");
+        _listDataHeader.add("11/12/17");
+        _listDataHeader.add("11/10/17");
+        _listDataHeader.add("11/9/17");
 
 
         //set Child views to parent
-        List<String> cardDetails=new ArrayList<String>();
-        cardDetails.add("");
+        List<String> reps=new ArrayList<String>();
+        reps.add("#1: 6.543 m/s");
+        reps.add("#2: 7.543 m/s");
+        reps.add("#3: 6.721 m/s");
 
-        List<String> mininum_sal_details=new ArrayList<String>();
-        mininum_sal_details.add("1000");
+        List<String> reps2=new ArrayList<String>();
+        reps2.add("#1 4.329 m/s");
 
-        List<String> interest_details=new ArrayList<String>();
-        interest_details.add(".432");
+        List<String> reps3 =new ArrayList<String>();
+        reps3.add("#1: 8.432 m/s");
 
         //set to adoptor
 
-        _listDataChild.put(_listDataHeader.get(0),  cardDetails);
-        _listDataChild.put(_listDataHeader.get(1),mininum_sal_details);
-        _listDataChild.put(_listDataHeader.get(2),interest_details);
-        _listDataChild.put(_listDataHeader.get(3),cardDetails);
+        _listDataChild.put(_listDataHeader.get(0),  reps);
+        _listDataChild.put(_listDataHeader.get(1),  reps2);
+        _listDataChild.put(_listDataHeader.get(2),  reps3);
+        _listDataChild.put(_listDataHeader.get(3),  reps);
 
-    }
-
-    public void setDataValues()
-    {
-        //set Parent values
-       // parent.setCardName("Platinum credit Card");
-      //  parent.setMinimum_salary(15000.00);
-      //  parent.setInterest_Rate(1.2);
-
-        //set Child values
-      //  child.set_card_details("You require minimum salary of 1500 per month");
-      //  child.set_interest_rate_details("interest rate is 2.0%");
     }
 
 }
-class ExpandabelListAdoptor extends BaseExpandableListAdapter
+class ExpandabelListAdoptor extends BaseExpandableListAdapter implements SummaryContract.View
 {
-
+    private SummaryContract.Presenter mPresenter;
     private Context _context;
     private List<String> _listDataHeader;
     private HashMap<String, List<String>> _listDataChild;
@@ -155,6 +148,10 @@ class ExpandabelListAdoptor extends BaseExpandableListAdapter
     public long getChildId(int groupPosition, int childPosition) {
         // TODO Auto-generated method stub
         return childPosition;
+    }
+
+    public void addRep(String repString){
+
     }
 
 
@@ -234,6 +231,10 @@ class ExpandabelListAdoptor extends BaseExpandableListAdapter
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         // TODO Auto-generated method stub
         return true;
+    }
+
+    public void setPresenter(@NonNull SummaryContract.Presenter presenter){
+        mPresenter = checkNotNull(presenter);
     }
 
 }
