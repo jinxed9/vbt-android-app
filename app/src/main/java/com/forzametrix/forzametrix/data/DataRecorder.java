@@ -44,7 +44,7 @@ public class DataRecorder implements DataRecorderContract.DataRecorder{
         return true;
     }
 
-    public void writeToFile(String data){
+    public void writeToFile(String data,String fileName){
         Log.v("Model:", "Write to file.");
         File dir = new File(Environment.getExternalStorageDirectory(),"forzametrix");
         boolean dirExists;

@@ -77,4 +77,16 @@ public class SummaryPresenter implements SummaryContract.Presenter {
         return rep + " " + set + " " + velocity + " " + weight + " "+ type;
     }
 
+
+    public void deleteRep(String date, int index){
+        Cursor cursor = mSummaryDatabase.selectReps(date);
+        if(cursor.moveToFirst()){
+            cursor.move(index);
+            //get the _id of the row
+            long rowId = cursor.getLong(cursor.getColumnIndex("_id"));
+            //then delete the row
+            boolean success = mSummaryDatabase.delete(rowId);
+        }
+    }
+
 }

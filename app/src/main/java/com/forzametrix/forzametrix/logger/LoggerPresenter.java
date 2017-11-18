@@ -23,9 +23,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 import static android.support.v4.util.Preconditions.checkNotNull;
+import static java.util.Calendar.DATE;
+import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.MILLISECOND;
+import static java.util.Calendar.MINUTE;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.SECOND;
+import static java.util.Calendar.YEAR;
 
 /**
  * Created by Bryan on 10/29/2017.
@@ -43,6 +52,7 @@ public class LoggerPresenter implements LoggerContract.Presenter {
     private boolean accelReady;
     private float cumVelocity,prevAccelMagnitude,cumAccelMagnitude;
     int samples;
+    private String fileName;
 
     private final DataRecorderContract.DataRecorder mDataRecorder;
 
@@ -62,6 +72,8 @@ public class LoggerPresenter implements LoggerContract.Presenter {
         prevAccelMagnitude = 0.0f;
         cumAccelMagnitude = 0.0f;
         samples = 0;
+        fileName = "";
+
     }
 
 
@@ -103,6 +115,11 @@ public class LoggerPresenter implements LoggerContract.Presenter {
         //
 
         if(output >= 5.00f && !logging){
+            //Beginning of the data collection
+            startTime = System.nanoTime();
+            data = "";
+            fileName = getCurrentTimeString();
+            //----------------------------------
             logging = true;
             prevAccelMagnitude = 0.0f;
             cumVelocity = 0.0f;
@@ -112,12 +129,19 @@ public class LoggerPresenter implements LoggerContract.Presenter {
         }
 
         if(logging && output < 2.00f){
+            //End of the data collection
             logging = false;
             rep++;
             float averageVelocity = cumVelocity/samples;
             data = data + "------- " + rep + ":" + averageVelocity + " -------\n";
             mLoggerView.updateRep(Integer.toString(rep));
             mLoggerView.updateVelocity(String.format("%.4f",averageVelocity));
+            //write to file here
+            mDataRecorder.writeToFile(data,fileName);
+            //reset stuff
+            data = "";
+            fileName = "";
+
         }
         //compile the string
         //data = data + currentTime + "," + accelData + "," + gravData + "\n";
@@ -143,14 +167,24 @@ public class LoggerPresenter implements LoggerContract.Presenter {
 
     public void beginRecording(){
         Log.v("Presenter:","Begin Recording.");
-        //reset the data string to blank
-        startTime = System.nanoTime();
-        data = "";
+
     }
 
     public void endRecording(){
         Log.v("Presenter:","End Recording.");
-        mDataRecorder.writeToFile(data);
-        data = "";
+
+    }
+
+
+    private String getCurrentTimeString(){
+        Calendar calendar = Calendar.getInstance();
+        //Month is plus 1 because the months start at 0 instead of 1
+        return calendar.get(YEAR) + "_" +
+                (calendar.get(MONTH)+1)+ "_" +
+                calendar.get(DATE) + "_" +
+                calendar.get(HOUR_OF_DAY) + "_" +
+                calendar.get(MINUTE) + "_" +
+                calendar.get(SECOND) + "_" +
+                calendar.get(MILLISECOND);
     }
 }

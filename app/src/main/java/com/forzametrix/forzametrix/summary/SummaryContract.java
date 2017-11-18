@@ -47,5 +47,7 @@ public interface SummaryContract {
 
         String getRepString(String date, int index);
 
+        void deleteRep(String date, int childPosition);
+
     }
 }

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
@@ -44,7 +45,6 @@ public class SummaryFragment extends Fragment implements SummaryContract.View {
     Context con;
     public SummaryFragment() {
         // Required empty public constructor
-
     }
 
     @Override
@@ -65,7 +65,6 @@ public class SummaryFragment extends Fragment implements SummaryContract.View {
         super.onActivityCreated(savedInstanceState);
         ExpandableListView lv = (ExpandableListView) v.findViewById(R.id.summaryList);
 
-        prepareListData();//here get the values and set this values to adoptor and set it visible
         con=getActivity();
 
 
@@ -82,41 +81,6 @@ public class SummaryFragment extends Fragment implements SummaryContract.View {
         return (SummaryContract.View)lv.getAdapter();
     }
 
-    public void prepareListData()
-    {
-        // testing purpose
-        _listDataHeader = new ArrayList<String>();
-        _listDataChild = new HashMap<String, List<String>>();
-       // _listDataChild = new ArrayList<String>();
-
-        //declare the references
-        //add the parent values to List
-        _listDataHeader.add("11/13/17");
-        _listDataHeader.add("11/12/17");
-        _listDataHeader.add("11/10/17");
-        _listDataHeader.add("11/9/17");
-
-
-        //set Child views to parent
-        List<String> reps=new ArrayList<String>();
-        reps.add("#1: 6.543 m/s");
-        reps.add("#2: 7.543 m/s");
-        reps.add("#3: 6.721 m/s");
-
-        List<String> reps2=new ArrayList<String>();
-        reps2.add("#1 4.329 m/s");
-
-        List<String> reps3 =new ArrayList<String>();
-        reps3.add("#1: 8.432 m/s");
-
-        //set to adoptor
-        _listDataChild.put(_listDataHeader.get(0),  reps);
-        _listDataChild.put(_listDataHeader.get(1),  reps2);
-        _listDataChild.put(_listDataHeader.get(2),  reps3);
-        _listDataChild.put(_listDataHeader.get(3),  reps);
-
-
-    }
 
 
     public int getDates(){
@@ -169,11 +133,16 @@ class ExpandableListAdapter extends BaseExpandableListAdapter
 
     }
 
+    public void deleteRep(int groupPosition, int childPosition){
+        String date = (String)getGroup(groupPosition);
+        mPresenter.deleteRep(date, childPosition);
+    }
+
 
     //i think this just creates a view out of the xml once the data has been pulled from
     //the data model
     @Override
-    public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         final String childText = (String) getChild(groupPosition, childPosition);
 
@@ -182,6 +151,18 @@ class ExpandableListAdapter extends BaseExpandableListAdapter
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(layout.summary_list_item, null);
         }
+
+        //handle buttons and add onClickListeners
+        Button deleteBtn = (Button)convertView.findViewById(R.id.delete_btn);
+
+        deleteBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                //execute the delete command
+                deleteRep(groupPosition,childPosition);
+                notifyDataSetChanged();
+            }
+        });
 
         TextView txtListChild = (TextView) convertView.findViewById(R.id.summaryList_Child);
         txtListChild.setText(childText);

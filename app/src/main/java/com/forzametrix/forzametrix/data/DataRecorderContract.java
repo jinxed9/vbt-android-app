@@ -19,7 +19,7 @@ package com.forzametrix.forzametrix.data;
 public interface DataRecorderContract {
 
     public interface DataRecorder{
-        void writeToFile(String data);
+        void writeToFile(String data,String fileName);
     }
 
 
