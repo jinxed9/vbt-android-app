@@ -42,6 +42,8 @@ public interface LoggerContract {
 
         void updateVelocity(String velocity);
 
+        int getWeight();
+
     }
 
     interface Presenter extends BasePresenter,SensorEventListener {

@@ -164,5 +164,13 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
     }
 
 
+    public int getWeight(){
+       int one = ones.getValue();
+       int ten = tens.getValue() *10;
+       int hundred = hundreds.getValue() * 100;
+
+       return hundred + ten + one;
+    }
+
 
 }

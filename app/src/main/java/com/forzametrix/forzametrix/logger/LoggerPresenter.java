@@ -2,6 +2,7 @@ package com.forzametrix.forzametrix.logger;
 
 import android.Manifest;
 import android.content.Context;
+import android.database.Cursor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.os.SystemClock;
 import com.forzametrix.forzametrix.R;
 import com.forzametrix.forzametrix.data.DataRecorderContract;
+import com.forzametrix.forzametrix.data.RepsDatabaseContract;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -48,18 +51,21 @@ public class LoggerPresenter implements LoggerContract.Presenter {
     private String gravData, accelData,data;
     private long startTime;
     private boolean logging;
-    private int rep;
-    private boolean accelReady;
+    private int rep,set,weight;
     private float cumVelocity,prevAccelMagnitude,cumAccelMagnitude;
     int samples;
-    private String fileName;
+    private String fileName,date;
+    boolean accelReady;
+
+    private final RepsDatabaseContract.Database mRepsDatabase;
 
     private final DataRecorderContract.DataRecorder mDataRecorder;
 
     private final LoggerContract.View mLoggerView;
 
-    public LoggerPresenter(@NonNull DataRecorderContract.DataRecorder dataRecorder,@NonNull LoggerContract.View loggerView){
+    public LoggerPresenter(@NonNull DataRecorderContract.DataRecorder dataRecorder, @NonNull RepsDatabaseContract.Database database, @NonNull LoggerContract.View loggerView){
         mDataRecorder = checkNotNull(dataRecorder,"dataRecorder cannot be null");
+        mRepsDatabase = checkNotNull(database,"database cannot be null");
         mLoggerView = checkNotNull(loggerView,"loggerView cannot be null");
 
         mLoggerView.setPresenter(this);
@@ -68,11 +74,16 @@ public class LoggerPresenter implements LoggerContract.Presenter {
         logging = false;
         accelReady = false;
         rep = 0;
+
+        //set needs to be initialized to the highest set for this date from the database.
+        set = getLastSet();
+
         cumVelocity = 0.0f;
         prevAccelMagnitude = 0.0f;
         cumAccelMagnitude = 0.0f;
         samples = 0;
         fileName = "";
+        date = "";
 
     }
 
@@ -118,6 +129,7 @@ public class LoggerPresenter implements LoggerContract.Presenter {
             //Beginning of the data collection
             startTime = System.nanoTime();
             data = "";
+            date = getDateString();
             fileName = getCurrentTimeString();
             //----------------------------------
             logging = true;
@@ -134,10 +146,14 @@ public class LoggerPresenter implements LoggerContract.Presenter {
             rep++;
             float averageVelocity = cumVelocity/samples;
             data = data + "------- " + rep + ":" + averageVelocity + " -------\n";
+            //update the view
             mLoggerView.updateRep(Integer.toString(rep));
             mLoggerView.updateVelocity(String.format("%.4f",averageVelocity));
             //write to file here
             mDataRecorder.writeToFile(data,fileName);
+            //store the calculated metrics in the database here.
+            mRepsDatabase.create(Long.parseLong(fileName),set,date,rep,averageVelocity,weight,"bench press");
+
             //reset stuff
             data = "";
             fileName = "";
@@ -167,6 +183,8 @@ public class LoggerPresenter implements LoggerContract.Presenter {
 
     public void beginRecording(){
         Log.v("Presenter:","Begin Recording.");
+        set++;
+        weight = mLoggerView.getWeight();
 
     }
 
@@ -179,12 +197,27 @@ public class LoggerPresenter implements LoggerContract.Presenter {
     private String getCurrentTimeString(){
         Calendar calendar = Calendar.getInstance();
         //Month is plus 1 because the months start at 0 instead of 1
-        return calendar.get(YEAR) + "_" +
-                (calendar.get(MONTH)+1)+ "_" +
-                calendar.get(DATE) + "_" +
-                calendar.get(HOUR_OF_DAY) + "_" +
-                calendar.get(MINUTE) + "_" +
-                calendar.get(SECOND) + "_" +
+        return "" + calendar.get(YEAR) +
+                (calendar.get(MONTH)+1)+
+                calendar.get(DATE) +
+                calendar.get(HOUR_OF_DAY) +
+                calendar.get(MINUTE) +
+                calendar.get(SECOND) +
                 calendar.get(MILLISECOND);
+    }
+
+    private String getDateString(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat date = new SimpleDateFormat("MMM dd, yyyy");
+        return date.format(calendar.getTime());
+    }
+
+    private int getLastSet(){
+        Cursor cursor = mRepsDatabase.selectReps(getDateString());
+        if(cursor.moveToLast()){
+            return cursor.getInt(cursor.getColumnIndex("setNum"));
+        }else{
+            return 0;
+        }
     }
 }

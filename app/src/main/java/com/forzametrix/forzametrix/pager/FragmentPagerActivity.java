@@ -54,10 +54,12 @@ public class FragmentPagerActivity extends AppCompatActivity {
                     MY_PERMISSION_REQUEST_EXTERNAL_WRITE);
         }
 
+        mDatabase = new RepsDatabase(getApplicationContext());
+
         //logger MVP stuff
         lf = new LoggerFragment();
         mDataRecorder = new DataRecorder();
-        mLoggerPresenter = new LoggerPresenter(mDataRecorder ,lf);
+        mLoggerPresenter = new LoggerPresenter(mDataRecorder, mDatabase ,lf);
 
         //setup the main pager
         mAdapter = new Adapter(getSupportFragmentManager());
@@ -67,10 +69,12 @@ public class FragmentPagerActivity extends AppCompatActivity {
 
         //summary MVP stuff
         sf = new SummaryFragment();
-        mDatabase = new RepsDatabase(getApplicationContext());
+
         mSummaryPresenter = new SummaryPresenter(mDatabase,sf);
 
 
+
+        /*
         mDatabase.create(7,1,"5-21-2017",14,3.001,135,"bench press");
         mDatabase.create(2,1,"4-15-2017",13,6.309,135,"bench press");
         mDatabase.create(3,1,"3-1-2017",16,4.272,135,"bench press");
@@ -83,6 +87,7 @@ public class FragmentPagerActivity extends AppCompatActivity {
         float vel = mDatabase.readVelocity(1);
         int weight = mDatabase.readWeight(1);
         String type = mDatabase.readType(1);
+        */
 
     }
 
