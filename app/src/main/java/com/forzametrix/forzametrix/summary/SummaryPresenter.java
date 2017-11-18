@@ -1,5 +1,7 @@
 package com.forzametrix.forzametrix.summary;
 
+import android.database.Cursor;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.forzametrix.forzametrix.data.RepsDatabase;
@@ -16,16 +18,63 @@ public class SummaryPresenter implements SummaryContract.Presenter {
 
 
 
-    private final RepsDatabase mSummaryDatabase;
-    //private final SummaryContract.View mSummaryView;
-    private final SummaryFragment mSummaryFragment;
+    private final RepsDatabaseContract.Database mSummaryDatabase;
+    private SummaryContract.View mSummaryView;
+    //private final SummaryFragment mSummaryFragment;
 
-    public SummaryPresenter(@NonNull RepsDatabase database, @NonNull SummaryFragment summaryFragment){
+
+    public SummaryPresenter(@NonNull RepsDatabaseContract.Database database, @NonNull SummaryFragment summaryView){
         mSummaryDatabase = checkNotNull(database,"database cannot be null");
-        mSummaryFragment = checkNotNull(summaryFragment,"summaryFragment cannot be null");
-        //mSummaryView = checkNotNull(summaryView,"summaryView cannot be null");
+       // mSummaryFragment = checkNotNull(summaryFragment,"summaryFragment cannot be null");
+        mSummaryView = checkNotNull(summaryView,"summaryView cannot be null");
+        mSummaryView.setPresenter(this);
     }
 
 
+    //get all rows with unique dates.
+    public int getDatesCount(){
+        Cursor dates = mSummaryDatabase.selectDates();
+        return dates.getCount();
+    }
+
+    public int getRepsCount(String date){
+        Cursor reps = mSummaryDatabase.selectReps(date);
+        return reps.getCount();
+    }
+
+
+    //make assumption that the cursor will return things in a consistent way
+    public String getDate(int index){
+        Cursor dates = mSummaryDatabase.selectDates();
+        String date = "";
+        if(dates.moveToFirst()) {
+            dates.move(index);
+            date = dates.getString(0);
+        }
+        return date;
+    }
+
+    public String getRepString(String date,int index){
+        String repString = "";
+        int rep = 0;
+        int set = 0;
+        float velocity = 0.00f;
+        int weight = 0;
+        String type = "";
+        Cursor reps = mSummaryDatabase.selectReps(date);
+        if(reps.moveToFirst()){
+            reps.move(index);
+            int index3 = reps.getColumnIndex("setNum");
+            rep = reps.getInt(reps.getColumnIndex("repNum"));
+            set = reps.getInt(reps.getColumnIndex("setNum"));
+            velocity = reps.getFloat(reps.getColumnIndex("velocity"));
+            weight = reps.getInt(reps.getColumnIndex("weight"));
+            type = reps.getString(reps.getColumnIndex("type"));
+        }
+
+
+
+        return rep + " " + set + " " + velocity + " " + weight + " "+ type;
+    }
 
 }

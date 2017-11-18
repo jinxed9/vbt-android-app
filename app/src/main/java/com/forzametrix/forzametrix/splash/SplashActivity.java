@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.os.Handler;
 import android.content.Intent;
-import com.forzametrix.forzametrix.logger.LoggerActivity;
 
 import com.forzametrix.forzametrix.R;
 import com.forzametrix.forzametrix.pager.FragmentPagerActivity;

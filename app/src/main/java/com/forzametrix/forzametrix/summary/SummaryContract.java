@@ -33,13 +33,19 @@ public interface SummaryContract {
 
     interface View extends BaseView<Presenter>{
 
-        //something just for the sake of testing
-        void addRep(String repString);
-
     }
 
     interface Presenter extends BasePresenter {
 
+        //get the number of unique dates
+        int getDatesCount();
+
+        String getDate(int index);
+
+        //get the number of reps at a certain date
+        int getRepsCount(String date);
+
+        String getRepString(String date, int index);
 
     }
 }

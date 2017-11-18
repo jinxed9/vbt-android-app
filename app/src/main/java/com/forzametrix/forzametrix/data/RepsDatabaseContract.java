@@ -16,6 +16,8 @@
 
 package com.forzametrix.forzametrix.data;
 
+import android.database.Cursor;
+
 public interface RepsDatabaseContract {
 
     public interface Database {
@@ -27,7 +29,7 @@ public interface RepsDatabaseContract {
         void update(long id);
 
         //Delete
-        void delete(long id);
+        boolean delete(long id);
 
         //Read
         int readWeight(long id);
@@ -36,6 +38,9 @@ public interface RepsDatabaseContract {
         String readDate(long id);
         String readType(long id);
         float readVelocity(long id);
+
+        Cursor selectDates();
+        Cursor selectReps(String date);
 
     }
 

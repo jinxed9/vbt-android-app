@@ -62,14 +62,22 @@ public class RepsDatabase implements RepsDatabaseContract.Database {
         return db.rawQuery("SELECT " + item + " from " + TABLE + " where " + ID + "=?",new String[]{id + ""});
     }
 
+    public Cursor selectDates(){
+        return db.rawQuery("SELECT DISTINCT " + DATE + " from " + TABLE,null);
+    }
+
+    public Cursor selectReps(String date){
+        return db.rawQuery("SELECT * from " + TABLE + " where " + DATE + "=?",new String[]{date + ""});
+    }
+
     //Update
     public void update(long id){
 
     }
 
     //Delete
-    public void delete(long id){
-
+    public boolean delete(long id){
+        return db.delete(TABLE,ID + "=" + id,null) > 0;
     }
 
     //Read

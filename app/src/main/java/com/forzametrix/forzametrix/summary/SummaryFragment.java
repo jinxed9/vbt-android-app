@@ -5,23 +5,16 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.ExpandableListAdapter;
 
-import com.forzametrix.forzametrix.BasePresenter;
 import com.forzametrix.forzametrix.R;
 import com.forzametrix.forzametrix.R.layout;
-import android.widget.Toast;
-import android.widget.SimpleExpandableListAdapter;
 
 
 import java.util.ArrayList;
@@ -39,13 +32,14 @@ import static android.support.v4.util.Preconditions.checkNotNull;
  *
  */
 
-public class SummaryFragment extends Fragment {
+public class SummaryFragment extends Fragment implements SummaryContract.View {
 
     View v;
     ExpandableListAdapter mAdapter;
     List<String> _listDataHeader;
     HashMap<String, List<String>> _listDataChild;
 
+    SummaryContract.Presenter mPresenter;
     ExpandableListView lv;
     Context con;
     public SummaryFragment() {
@@ -74,13 +68,14 @@ public class SummaryFragment extends Fragment {
         prepareListData();//here get the values and set this values to adoptor and set it visible
         con=getActivity();
 
-        mAdapter=new ExpandabelListAdoptor(con,_listDataHeader, _listDataChild) ; //here i didnt set list values to this adoptor
 
+        ///set presenter must be called before set adapter.
+        //TODO set the presneter in the adapter constructor
+        mAdapter=new ExpandableListAdapter(con,_listDataHeader, _listDataChild) ;
+        //pass this presenter to the adapter
+        mAdapter.setPresenter(mPresenter);
         // setting list adapter
         lv.setAdapter(mAdapter);
-
-
-
     }
 
     public SummaryContract.View getAdapter(){
@@ -94,7 +89,7 @@ public class SummaryFragment extends Fragment {
         _listDataChild = new HashMap<String, List<String>>();
        // _listDataChild = new ArrayList<String>();
 
-        // declare the references
+        //declare the references
         //add the parent values to List
         _listDataHeader.add("11/13/17");
         _listDataHeader.add("11/12/17");
@@ -115,34 +110,54 @@ public class SummaryFragment extends Fragment {
         reps3.add("#1: 8.432 m/s");
 
         //set to adoptor
-
         _listDataChild.put(_listDataHeader.get(0),  reps);
         _listDataChild.put(_listDataHeader.get(1),  reps2);
         _listDataChild.put(_listDataHeader.get(2),  reps3);
         _listDataChild.put(_listDataHeader.get(3),  reps);
 
+
+    }
+
+
+    public int getDates(){
+        int number = 0;
+
+        number = mAdapter.getGroupCount();
+
+        return 0;
+    }
+
+    public void setPresenter(@NonNull SummaryContract.Presenter presenter){
+        //set this objects presenter
+        mPresenter = checkNotNull(presenter);
     }
 
 }
-class ExpandabelListAdoptor extends BaseExpandableListAdapter implements SummaryContract.View
+class ExpandableListAdapter extends BaseExpandableListAdapter
 {
     private SummaryContract.Presenter mPresenter;
     private Context _context;
     private List<String> _listDataHeader;
     private HashMap<String, List<String>> _listDataChild;
 
-    ExpandabelListAdoptor(Context con,List<String> listDataHeader ,HashMap<String, List<String>>  listDataChild )
+    ExpandableListAdapter(Context con, List<String> listDataHeader , HashMap<String, List<String>>  listDataChild)
     {
         this._context=con;
         this._listDataChild=listDataChild;
         this._listDataHeader=listDataHeader;
     }
 
+    //these methods pull data from the underlying data model
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .get(childPosititon);
+
+        String date = (String) getGroup(groupPosition);
+
+        String repString = mPresenter.getRepString(date,childPosititon);
+
+        return repString;
     }
+
 
     @Override
     public long getChildId(int groupPosition, int childPosition) {
@@ -150,14 +165,15 @@ class ExpandabelListAdoptor extends BaseExpandableListAdapter implements Summary
         return childPosition;
     }
 
-    public void addRep(String repString){
+    public void addRep(String rep){
 
     }
 
 
+    //i think this just creates a view out of the xml once the data has been pulled from
+    //the data model
     @Override
-    public View getChildView(int groupPosition, final int childPosition,
-                             boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
         final String childText = (String) getChild(groupPosition, childPosition);
 
@@ -167,34 +183,33 @@ class ExpandabelListAdoptor extends BaseExpandableListAdapter implements Summary
             convertView = infalInflater.inflate(layout.summary_list_item, null);
         }
 
-        TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.summaryList_Child);
+        TextView txtListChild = (TextView) convertView.findViewById(R.id.summaryList_Child);
         txtListChild.setText(childText);
         return convertView;
-
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        //this method is causing the crashing. Not sure why.
-        String item = this._listDataHeader.get(groupPosition);
-        List<String> item2 = this._listDataChild.get(item);
-        int size = item2.size();
-
-        //return this._listDataChild.get(this._listDataHeader.get(groupPosition)).size();
-        return size;
+        String date = (String) getGroup(groupPosition);
+        int childrenCount = mPresenter.getRepsCount(date);
+        return childrenCount;
     }
 
     @Override
     public Object getGroup(int groupPosition) {
+
         // TODO Auto-generated method stub
-        return this._listDataHeader.get(groupPosition);
+        String date = mPresenter.getDate(groupPosition);
+        //return this._listDataHeader.get(groupPosition);
+        return date;
     }
 
+    //this is how it determine how many iterations to go through
     @Override
     public int getGroupCount() {
-        // TODO Auto-generated method stub
-        return this._listDataHeader.size();
+        //make a query to the db to return a cursor with the number of unique dates
+        int dates = mPresenter.getDatesCount();
+        return dates;
     }
 
     @Override
@@ -209,8 +224,7 @@ class ExpandabelListAdoptor extends BaseExpandableListAdapter implements Summary
 
         String headerTitle = (String) getGroup(groupPosition);
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.summary_list_group, null);
         }
 
@@ -233,10 +247,10 @@ class ExpandabelListAdoptor extends BaseExpandableListAdapter implements Summary
         return true;
     }
 
+
     public void setPresenter(@NonNull SummaryContract.Presenter presenter){
         mPresenter = checkNotNull(presenter);
     }
-
 }
 
 
