@@ -58,6 +58,8 @@ public class SummaryFragment extends Fragment implements SummaryContract.View {
     }
 
 
+
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub

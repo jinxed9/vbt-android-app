@@ -74,7 +74,7 @@ public class SummaryPresenter implements SummaryContract.Presenter {
 
 
 
-        return rep + " " + set + " " + velocity + " " + weight + " "+ type;
+        return "Rep: "+set + " Set: " + rep + " Vel: " + velocity + " @ " + weight + " lbs "+ type;
     }
 
 

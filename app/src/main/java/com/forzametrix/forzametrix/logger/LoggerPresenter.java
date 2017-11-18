@@ -191,6 +191,7 @@ public class LoggerPresenter implements LoggerContract.Presenter {
     public void endRecording(){
         Log.v("Presenter:","End Recording.");
 
+
     }
 
 
