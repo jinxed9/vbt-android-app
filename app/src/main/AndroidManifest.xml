@@ -25,4 +25,5 @@
         <activity android:name=".pager.FragmentPagerActivity"></activity>
     </application>
 
+
 </manifest>

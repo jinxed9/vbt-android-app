@@ -3,9 +3,13 @@ package com.forzametrix.forzametrix.summary;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.database.DataSetObserver;
 
 import com.forzametrix.forzametrix.data.RepsDatabase;
 import com.forzametrix.forzametrix.data.RepsDatabaseContract;
+import com.forzametrix.forzametrix.data.RepsDatabaseContract.DatabaseEventListener;
+
 
 import static android.support.v4.util.Preconditions.checkNotNull;
 
@@ -14,7 +18,6 @@ import static android.support.v4.util.Preconditions.checkNotNull;
  */
 
 public class SummaryPresenter implements SummaryContract.Presenter {
-
 
 
 
@@ -28,7 +31,16 @@ public class SummaryPresenter implements SummaryContract.Presenter {
        // mSummaryFragment = checkNotNull(summaryFragment,"summaryFragment cannot be null");
         mSummaryView = checkNotNull(summaryView,"summaryView cannot be null");
         mSummaryView.setPresenter(this);
+
+        mSummaryDatabase.setDatabaseEventListener(new DatabaseEventListener() {
+            @Override
+            public void onEvent() {
+                mSummaryView.notifyDatasetChanged();
+            }
+        });
+
     }
+
 
 
     //get all rows with unique dates.
@@ -74,7 +86,7 @@ public class SummaryPresenter implements SummaryContract.Presenter {
 
 
 
-        return "Rep: "+set + " Set: " + rep + " Vel: " + velocity + " @ " + weight + " lbs "+ type;
+        return "Set: "+set + " Rep: " + rep + " Vel: " + velocity + " @ " + weight + " lbs "+ type;
     }
 
 
@@ -88,5 +100,8 @@ public class SummaryPresenter implements SummaryContract.Presenter {
             boolean success = mSummaryDatabase.delete(rowId);
         }
     }
+
+
+
 
 }

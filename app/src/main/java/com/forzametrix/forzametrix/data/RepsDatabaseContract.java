@@ -18,9 +18,11 @@ package com.forzametrix.forzametrix.data;
 
 import android.database.Cursor;
 
+import com.forzametrix.forzametrix.summary.SummaryContract;
+
 public interface RepsDatabaseContract {
 
-    public interface Database {
+    public interface Database{
 
         //Create
         long create(long id, int set,String date, int rep, double vel,int weight, String type);
@@ -42,6 +44,11 @@ public interface RepsDatabaseContract {
         Cursor selectDates();
         Cursor selectReps(String date);
 
+        void setDatabaseEventListener(DatabaseEventListener listener);
+    }
+
+    public interface DatabaseEventListener{
+        void onEvent();
     }
 
 

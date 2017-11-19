@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.forzametrix.forzametrix.R;
 import com.forzametrix.forzametrix.data.DataRecorder;
@@ -71,23 +72,6 @@ public class FragmentPagerActivity extends AppCompatActivity {
         sf = new SummaryFragment();
 
         mSummaryPresenter = new SummaryPresenter(mDatabase,sf);
-
-
-
-        /*
-        mDatabase.create(7,1,"5-21-2017",14,3.001,135,"bench press");
-        mDatabase.create(2,1,"4-15-2017",13,6.309,135,"bench press");
-        mDatabase.create(3,1,"3-1-2017",16,4.272,135,"bench press");
-        mDatabase.create(4,1,"2-14-2017",10,4.622,135,"bench press");
-        mDatabase.create(5,1,"2-14-2017",10,4.622,135,"bench press");
-        mDatabase.create(6,1,"2-15-2017",10,4.622,135,"bench press");
-        int set = mDatabase.readSet(1);
-        String date = mDatabase.readDate(1);
-        int rep = mDatabase.readReps(1);
-        float vel = mDatabase.readVelocity(1);
-        int weight = mDatabase.readWeight(1);
-        String type = mDatabase.readType(1);
-        */
 
     }
 

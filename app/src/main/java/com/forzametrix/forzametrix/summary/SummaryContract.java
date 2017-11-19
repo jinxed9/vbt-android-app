@@ -32,7 +32,7 @@ import com.forzametrix.forzametrix.BaseView;
 public interface SummaryContract {
 
     interface View extends BaseView<Presenter>{
-
+        void notifyDatasetChanged();
     }
 
     interface Presenter extends BasePresenter {
@@ -48,6 +48,8 @@ public interface SummaryContract {
         String getRepString(String date, int index);
 
         void deleteRep(String date, int childPosition);
+
+
 
     }
 }

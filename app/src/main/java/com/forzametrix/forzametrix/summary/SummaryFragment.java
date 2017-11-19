@@ -18,7 +18,6 @@ import com.forzametrix.forzametrix.R;
 import com.forzametrix.forzametrix.R.layout;
 
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,10 +38,10 @@ public class SummaryFragment extends Fragment implements SummaryContract.View {
     ExpandableListAdapter mAdapter;
     List<String> _listDataHeader;
     HashMap<String, List<String>> _listDataChild;
-
     SummaryContract.Presenter mPresenter;
     ExpandableListView lv;
     Context con;
+
     public SummaryFragment() {
         // Required empty public constructor
     }
@@ -77,6 +76,7 @@ public class SummaryFragment extends Fragment implements SummaryContract.View {
         mAdapter.setPresenter(mPresenter);
         // setting list adapter
         lv.setAdapter(mAdapter);
+
     }
 
     public SummaryContract.View getAdapter(){
@@ -96,6 +96,10 @@ public class SummaryFragment extends Fragment implements SummaryContract.View {
     public void setPresenter(@NonNull SummaryContract.Presenter presenter){
         //set this objects presenter
         mPresenter = checkNotNull(presenter);
+    }
+
+    public void notifyDatasetChanged(){
+        mAdapter.notifyDataSetChanged();
     }
 
 }

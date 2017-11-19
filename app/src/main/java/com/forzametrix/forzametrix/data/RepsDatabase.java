@@ -2,10 +2,16 @@ package com.forzametrix.forzametrix.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.forzametrix.forzametrix.summary.SummaryContract;
+import com.forzametrix.forzametrix.data.RepsDatabaseContract.DatabaseEventListener;
+
+
 
 /**
  * Created by Bryan on 11/13/2017.
@@ -20,8 +26,10 @@ public class RepsDatabase implements RepsDatabaseContract.Database {
         csv will be written that correspond with each id
      */
 
+    DatabaseEventListener mDatabaseListener;
     RepsDatabaseHelper dbHelper;
     SQLiteDatabase db;
+    Context con;
 
     public final static String TABLE = "repsTable"; //name of table
     public final static String ID = "_id"; //id value for the rep
@@ -33,6 +41,7 @@ public class RepsDatabase implements RepsDatabaseContract.Database {
     public final static String TYPE = "type";
 
     public RepsDatabase(Context context){
+        con = context;
         dbHelper = new RepsDatabaseHelper(context);
         db = dbHelper.getWritableDatabase();
     }
@@ -46,6 +55,9 @@ public class RepsDatabase implements RepsDatabaseContract.Database {
         values.put(VELOCITY,vel);
         values.put(WEIGHT,weight);
         values.put(TYPE,type);
+        if(mDatabaseListener != null){
+            mDatabaseListener.onEvent();
+        }
         return db.insert(TABLE,null,values);
     }
 
@@ -127,6 +139,11 @@ public class RepsDatabase implements RepsDatabaseContract.Database {
         }finally {
             mCursor.close();
         }
+    }
+
+
+    public void setDatabaseEventListener(DatabaseEventListener listener){
+        mDatabaseListener = listener;
     }
 
 
