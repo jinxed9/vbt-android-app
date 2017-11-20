@@ -1,6 +1,7 @@
 package com.forzametrix.forzametrix.pager;
 
 import android.Manifest;
+import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.forzametrix.forzametrix.R;
 import com.forzametrix.forzametrix.data.DataRecorder;
@@ -72,6 +75,8 @@ public class FragmentPagerActivity extends AppCompatActivity {
         sf = new SummaryFragment();
 
         mSummaryPresenter = new SummaryPresenter(mDatabase,sf);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
     }
 

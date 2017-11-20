@@ -17,9 +17,6 @@ import static android.support.v4.util.Preconditions.checkNotNull;
  */
 
 public class SummaryPresenter implements SummaryContract.Presenter {
-
-
-
     private final RepsDatabaseContract.Database mSummaryDatabase;
     private SummaryContract.View mSummaryView;
     //private final SummaryFragment mSummaryFragment;
@@ -65,8 +62,6 @@ public class SummaryPresenter implements SummaryContract.Presenter {
         }
         return children;
     }
-
-
 
     //get all rows with unique dates.
     public int getDatesCount(){
