@@ -74,9 +74,7 @@ public class LoggerPresenter implements LoggerContract.Presenter {
         logging = false;
         accelReady = false;
         rep = 0;
-
-        //set needs to be initialized to the highest set for this date from the database.
-        set = getLastSet();
+        set = 0;
 
         cumVelocity = 0.0f;
         prevAccelMagnitude = 0.0f;
@@ -84,6 +82,8 @@ public class LoggerPresenter implements LoggerContract.Presenter {
         samples = 0;
         fileName = "";
         date = "";
+
+
 
     }
 
@@ -119,7 +119,6 @@ public class LoggerPresenter implements LoggerContract.Presenter {
 
         float output = a *((dp -  prevOutput) + prevOutput);
 
-        mLoggerView.updateForceView(String.format("%.3f",output));
         mLoggerView.updateForce((int)(output*10));
 
         //data = data + currentTime + "," + dp + "\n";
@@ -184,14 +183,13 @@ public class LoggerPresenter implements LoggerContract.Presenter {
     public void beginRecording(){
         Log.v("Presenter:","Begin Recording.");
         set++;
+        rep = 0;
+        mLoggerView.updateSet(Integer.toString(set));
         weight = mLoggerView.getWeight();
-
     }
 
     public void endRecording(){
         Log.v("Presenter:","End Recording.");
-
-
     }
 
 
@@ -213,12 +211,11 @@ public class LoggerPresenter implements LoggerContract.Presenter {
         return date.format(calendar.getTime());
     }
 
-    private int getLastSet(){
+    public void getLastSet() {
         Cursor cursor = mRepsDatabase.selectReps(getDateString());
-        if(cursor.moveToLast()){
-            return cursor.getInt(cursor.getColumnIndex("setNum"));
-        }else{
-            return 0;
+        if (cursor.moveToLast()) {
+            set = cursor.getInt(cursor.getColumnIndex("setNum"));
+            mLoggerView.updateSet(Integer.toString(set));
         }
     }
 }

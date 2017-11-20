@@ -36,9 +36,9 @@ public interface LoggerContract {
 
         void updateForce(int force);
 
-        void updateForceView(String force);
-
         void updateRep(String rep);
+
+        void updateSet(String set);
 
         void updateVelocity(String velocity);
 
@@ -55,6 +55,8 @@ public interface LoggerContract {
         void onSensorChanged(SensorEvent sensorEvent);
 
         void onAccuracyChanged(Sensor sensor, int accuracy);
+
+        void getLastSet();
 
 
     }

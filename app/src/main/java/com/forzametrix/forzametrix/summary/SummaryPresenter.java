@@ -1,15 +1,14 @@
 package com.forzametrix.forzametrix.summary;
 
 import android.database.Cursor;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
-import android.database.DataSetObserver;
 
-import com.forzametrix.forzametrix.data.RepsDatabase;
 import com.forzametrix.forzametrix.data.RepsDatabaseContract;
 import com.forzametrix.forzametrix.data.RepsDatabaseContract.DatabaseEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import static android.support.v4.util.Preconditions.checkNotNull;
 
@@ -33,12 +32,38 @@ public class SummaryPresenter implements SummaryContract.Presenter {
         mSummaryView.setPresenter(this);
 
         mSummaryDatabase.setDatabaseEventListener(new DatabaseEventListener() {
+
             @Override
-            public void onEvent() {
-                mSummaryView.notifyDatasetChanged();
+            public void onCreate() {
+                mSummaryView.refreshView();
+            }
+
+            @Override
+            public void onDelete(){
+                mSummaryView.refreshView();
             }
         });
+    }
 
+    public List<String> initHeaders(){
+        List<String> headers = new ArrayList<String>();
+        for(int i = 0; i < getDatesCount(); i++){
+            headers.add(getDate(i));
+        }
+        return headers;
+    }
+
+    public HashMap<String,List<String>> initChildren(){
+        HashMap<String,List<String>> children = new HashMap<String,List<String>>();
+        for(int i = 0; i < getDatesCount(); i++){
+            String header = getDate(i);
+            List<String> child = new ArrayList<String>();
+            for(int j = 0; j < getRepsCount(header); j++){
+                child.add(getRepString(header,j));
+            }
+            children.put(header,child);
+        }
+        return children;
     }
 
 
@@ -51,7 +76,9 @@ public class SummaryPresenter implements SummaryContract.Presenter {
 
     public int getRepsCount(String date){
         Cursor reps = mSummaryDatabase.selectReps(date);
-        return reps.getCount();
+        int count = reps.getCount();
+
+        return count;
     }
 
 
@@ -67,7 +94,6 @@ public class SummaryPresenter implements SummaryContract.Presenter {
     }
 
     public String getRepString(String date,int index){
-        String repString = "";
         int rep = 0;
         int set = 0;
         float velocity = 0.00f;
@@ -76,7 +102,6 @@ public class SummaryPresenter implements SummaryContract.Presenter {
         Cursor reps = mSummaryDatabase.selectReps(date);
         if(reps.moveToFirst()){
             reps.move(index);
-            int index3 = reps.getColumnIndex("setNum");
             rep = reps.getInt(reps.getColumnIndex("repNum"));
             set = reps.getInt(reps.getColumnIndex("setNum"));
             velocity = reps.getFloat(reps.getColumnIndex("velocity"));
@@ -86,7 +111,7 @@ public class SummaryPresenter implements SummaryContract.Presenter {
 
 
 
-        return "Set: "+set + " Rep: " + rep + " Vel: " + velocity + " @ " + weight + " lbs "+ type;
+        return "Set: "+ set + " Rep: " + rep + " Vel: " + velocity + " @ " + weight + " lbs "+ type;
     }
 
 
@@ -100,8 +125,4 @@ public class SummaryPresenter implements SummaryContract.Presenter {
             boolean success = mSummaryDatabase.delete(rowId);
         }
     }
-
-
-
-
 }

@@ -18,6 +18,7 @@ import com.forzametrix.forzametrix.R;
 import com.forzametrix.forzametrix.R.layout;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,11 +37,11 @@ public class SummaryFragment extends Fragment implements SummaryContract.View {
 
     View v;
     ExpandableListAdapter mAdapter;
-    List<String> _listDataHeader;
-    HashMap<String, List<String>> _listDataChild;
     SummaryContract.Presenter mPresenter;
     ExpandableListView lv;
     Context con;
+
+    int number;
 
     public SummaryFragment() {
         // Required empty public constructor
@@ -69,13 +70,19 @@ public class SummaryFragment extends Fragment implements SummaryContract.View {
         con=getActivity();
 
 
+
         ///set presenter must be called before set adapter.
         //TODO set the presneter in the adapter constructor
-        mAdapter=new ExpandableListAdapter(con,_listDataHeader, _listDataChild) ;
+        mAdapter=new ExpandableListAdapter(con) ;
+
+
         //pass this presenter to the adapter
         mAdapter.setPresenter(mPresenter);
         // setting list adapter
         lv.setAdapter(mAdapter);
+        number = 0;
+
+        mAdapter.setNewItems(mPresenter.initHeaders(),mPresenter.initChildren());
 
     }
 
@@ -84,25 +91,34 @@ public class SummaryFragment extends Fragment implements SummaryContract.View {
     }
 
 
-
-    public int getDates(){
-        int number = 0;
-
-        number = mAdapter.getGroupCount();
-
-        return 0;
-    }
-
     public void setPresenter(@NonNull SummaryContract.Presenter presenter){
         //set this objects presenter
         mPresenter = checkNotNull(presenter);
     }
 
-    public void notifyDatasetChanged(){
-        mAdapter.notifyDataSetChanged();
+
+    public void refreshView(){
+        if(mPresenter != null)
+            mAdapter.setNewItems(mPresenter.initHeaders(),mPresenter.initChildren());
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class ExpandableListAdapter extends BaseExpandableListAdapter
 {
     private SummaryContract.Presenter mPresenter;
@@ -110,22 +126,21 @@ class ExpandableListAdapter extends BaseExpandableListAdapter
     private List<String> _listDataHeader;
     private HashMap<String, List<String>> _listDataChild;
 
-    ExpandableListAdapter(Context con, List<String> listDataHeader , HashMap<String, List<String>>  listDataChild)
-    {
+    ExpandableListAdapter(Context con) {
         this._context=con;
-        this._listDataChild=listDataChild;
-        this._listDataHeader=listDataHeader;
     }
 
     //these methods pull data from the underlying data model
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
 
-        String date = (String) getGroup(groupPosition);
-
-        String repString = mPresenter.getRepString(date,childPosititon);
-
-        return repString;
+        if(_listDataHeader != null && _listDataChild != null){
+            String key = (String) getGroup(groupPosition);
+            return _listDataChild.get(key).get(childPosititon);
+        }
+        return "";
+        //String repString = mPresenter.getRepString(date,childPosititon);
+        //return repString;
     }
 
 
@@ -177,26 +192,45 @@ class ExpandableListAdapter extends BaseExpandableListAdapter
 
     @Override
     public int getChildrenCount(int groupPosition) {
+        String key = (String)getGroup(groupPosition);
+        if(_listDataChild != null) {
+            if (_listDataChild.containsKey(key)){
+                return _listDataChild.get(key).size();
+            }
+            return 0;
+        }
+        return 0;
+        /*
         String date = (String) getGroup(groupPosition);
         int childrenCount = mPresenter.getRepsCount(date);
         return childrenCount;
+        */
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-
+        if(_listDataHeader != null)
+            return _listDataHeader.get(groupPosition);
+        return 0;
+        /*
         // TODO Auto-generated method stub
         String date = mPresenter.getDate(groupPosition);
-        //return this._listDataHeader.get(groupPosition);
         return date;
+        */
     }
 
     //this is how it determine how many iterations to go through
     @Override
     public int getGroupCount() {
+        if(_listDataHeader != null)
+            return _listDataHeader.size();
+        return 0;
+
+        /*
         //make a query to the db to return a cursor with the number of unique dates
         int dates = mPresenter.getDatesCount();
         return dates;
+        */
     }
 
     @Override
@@ -225,7 +259,7 @@ class ExpandableListAdapter extends BaseExpandableListAdapter
     @Override
     public boolean hasStableIds() {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
@@ -238,6 +272,13 @@ class ExpandableListAdapter extends BaseExpandableListAdapter
     public void setPresenter(@NonNull SummaryContract.Presenter presenter){
         mPresenter = checkNotNull(presenter);
     }
+
+    public void setNewItems(List<String> listDataHeader, HashMap<String,List<String>> listDataChild){
+        this._listDataChild = listDataChild;
+        this._listDataHeader = listDataHeader;
+        this.notifyDataSetChanged();
+    }
+
 }
 
 

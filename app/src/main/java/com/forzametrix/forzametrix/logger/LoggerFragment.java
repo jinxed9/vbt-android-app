@@ -42,7 +42,7 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
     Sensor mAccelSensor;
     Sensor mGyroSensor;
     Sensor mGravitySensor;
-    TextView forceView,repsView,velocityView;
+    TextView forceView,repsView,velocityView,setView;
 
 
     public LoggerFragment(){
@@ -69,13 +69,17 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
         hundreds = (NumberPicker) view.findViewById(R.id.numberPicker_hundreds);
         record = (Switch)view.findViewById(R.id.switch_record);
         forceBar = (ProgressBar)view.findViewById(R.id.progressBar_force);
-        forceView = (TextView)view.findViewById(R.id.textView_force);
+        //forceView = (TextView)view.findViewById(R.id.textView_force);
         velocityView = (TextView)view.findViewById(R.id.textView_velocityActual);
         repsView = (TextView)view.findViewById(R.id.textView_repsActual);
+        setView = (TextView)view.findViewById(R.id.textView_set);
+
 
         forceBar.setMax(100);
         forceBar.setProgress(0);
-        forceView.setText("- - -");
+
+        setView.setText("- - -");
+        mPresenter.getLastSet();
 
         ones.setMinValue(0);
         tens.setMinValue(0);
@@ -86,6 +90,7 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
         ones.setWrapSelectorWheel(true);
         tens.setWrapSelectorWheel(true);
         hundreds.setWrapSelectorWheel(true);
+
 
 
         mSensorManager = (SensorManager)getActivity().getSystemService(Context.SENSOR_SERVICE);
@@ -135,10 +140,6 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
         mPresenter = checkNotNull(presenter);
     }
 
-    public void updateForceView(String force){
-        forceView.setText(force);
-    }
-
     public void updateForce(int force){
         forceBar.setProgress(force);
     }
@@ -146,6 +147,8 @@ public class LoggerFragment extends Fragment implements LoggerContract.View{
     public void updateRep(String rep){
         repsView.setText(rep);
     }
+
+    public void updateSet(String set){ setView.setText(set);}
 
     public void updateVelocity(String velocity){
         velocityView.setText(velocity);

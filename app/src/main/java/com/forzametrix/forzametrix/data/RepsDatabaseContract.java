@@ -18,37 +18,20 @@ package com.forzametrix.forzametrix.data;
 
 import android.database.Cursor;
 
-import com.forzametrix.forzametrix.summary.SummaryContract;
-
 public interface RepsDatabaseContract {
 
     public interface Database{
 
-        //Create
         long create(long id, int set,String date, int rep, double vel,int weight, String type);
-
-        //Update
-        void update(long id);
-
-        //Delete
         boolean delete(long id);
-
-        //Read
-        int readWeight(long id);
-        int readReps(long id);
-        int readSet(long id);
-        String readDate(long id);
-        String readType(long id);
-        float readVelocity(long id);
-
         Cursor selectDates();
         Cursor selectReps(String date);
-
         void setDatabaseEventListener(DatabaseEventListener listener);
     }
 
     public interface DatabaseEventListener{
-        void onEvent();
+        void onCreate();
+        void onDelete();
     }
 
 

@@ -50,13 +50,28 @@
             android:text="- - -" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView_force"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".15"
-        android:gravity="center_horizontal"
-        android:text="- - -" />
+        android:layout_weight=".25"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView_setLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="Set:     " />
+
+        <TextView
+            android:id="@+id/textView_set"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:text="- - -" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

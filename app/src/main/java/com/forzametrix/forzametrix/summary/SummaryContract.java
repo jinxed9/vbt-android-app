@@ -23,6 +23,9 @@ import android.hardware.SensorEventListener;
 import com.forzametrix.forzametrix.BasePresenter;
 import com.forzametrix.forzametrix.BaseView;
 
+import java.util.HashMap;
+import java.util.List;
+
 //import com.example.android.architecture.blueprints.todoapp.data.Task;
 
 
@@ -32,11 +35,11 @@ import com.forzametrix.forzametrix.BaseView;
 public interface SummaryContract {
 
     interface View extends BaseView<Presenter>{
-        void notifyDatasetChanged();
+        void refreshView();
     }
 
-    interface Presenter extends BasePresenter {
 
+    interface Presenter extends BasePresenter {
         //get the number of unique dates
         int getDatesCount();
 
@@ -49,7 +52,8 @@ public interface SummaryContract {
 
         void deleteRep(String date, int childPosition);
 
+        List<String> initHeaders();
 
-
+        HashMap<String,List<String>> initChildren();
     }
 }

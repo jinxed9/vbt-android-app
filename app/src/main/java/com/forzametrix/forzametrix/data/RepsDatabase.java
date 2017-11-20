@@ -2,13 +2,11 @@ package com.forzametrix.forzametrix.data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.forzametrix.forzametrix.summary.SummaryContract;
 import com.forzametrix.forzametrix.data.RepsDatabaseContract.DatabaseEventListener;
 
 
@@ -55,23 +53,11 @@ public class RepsDatabase implements RepsDatabaseContract.Database {
         values.put(VELOCITY,vel);
         values.put(WEIGHT,weight);
         values.put(TYPE,type);
+        long result = db.insert(TABLE,null,values);
         if(mDatabaseListener != null){
-            mDatabaseListener.onEvent();
+            mDatabaseListener.onCreate();
         }
-        return db.insert(TABLE,null,values);
-    }
-
-    public Cursor selectFirstRow(){
-        String[] cols = new String[] {ID,SET,DATE,REP,VELOCITY,WEIGHT,TYPE};
-        Cursor mCursor = db.query(true,TABLE,cols,null,null,null,null,null,null);
-        if(mCursor != null){
-            mCursor.moveToFirst();
-        }
-        return mCursor; //iterate to get each value
-    }
-
-    Cursor selectRowById(long id, String item){
-        return db.rawQuery("SELECT " + item + " from " + TABLE + " where " + ID + "=?",new String[]{id + ""});
+        return result;
     }
 
     public Cursor selectDates(){
@@ -82,88 +68,17 @@ public class RepsDatabase implements RepsDatabaseContract.Database {
         return db.rawQuery("SELECT * from " + TABLE + " where " + DATE + "=?",new String[]{date + ""});
     }
 
-    //Update
-    public void update(long id){
-
-    }
-
     //Delete
     public boolean delete(long id){
-        return db.delete(TABLE,ID + "=" + id,null) > 0;
-    }
-
-    //Read
-    int readRowItemInt(long id,String item){
-
-        Cursor mCursor = null;
-       try {
-           mCursor = selectRowById(id,item);
-           int value = -1;
-
-           if (mCursor.getCount() > 0) {
-               if(mCursor.moveToFirst())
-                   value = mCursor.getInt(0);
-           }
-           return value;
-       } finally {
-           mCursor.close();
-       }
-
-    }
-
-    String readRowItemString(long id,String item){
-        Cursor mCursor = null;
-        try {
-            mCursor = selectRowById(id,item);
-            String value = "";
-            if (mCursor.getCount() > 0) {
-                mCursor.moveToFirst();
-                value = mCursor.getString(0);
-            }
-            return value;
-        } finally {
-            mCursor.close();
+        boolean result = db.delete(TABLE,ID + "=" + id,null) > 0;
+        if(mDatabaseListener != null){
+            mDatabaseListener.onDelete();
         }
+        return result;
     }
-
-    float readRowItemFloat(long id, String item){
-        Cursor mCursor = null;
-        try {
-            mCursor = selectRowById(id,item);
-            float value = -1.0f;
-            if (mCursor.getCount() > 0) {
-                mCursor.moveToFirst();
-                value = mCursor.getFloat(0);
-            }
-            return value;
-        }finally {
-            mCursor.close();
-        }
-    }
-
 
     public void setDatabaseEventListener(DatabaseEventListener listener){
         mDatabaseListener = listener;
-    }
-
-
-    public int readWeight(long id){
-        return readRowItemInt(id,WEIGHT);
-    }
-    public int readReps(long id){
-        return readRowItemInt(id,REP);
-    }
-    public int readSet(long id){
-        return readRowItemInt(id,SET);
-    }
-    public String readDate(long id){
-        return readRowItemString(id,DATE);
-    }
-    public String readType(long id){
-        return readRowItemString(id,TYPE);
-    }
-    public float readVelocity(long id){
-        return readRowItemFloat(id,VELOCITY);
     }
 }
 
